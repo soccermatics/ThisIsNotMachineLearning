@@ -19,12 +19,15 @@ dependencies:
   - scikit-learn
   - linkify-it-py
   - pip
-  - xgboost
-  - pyreadstat
+  - xgboost=1.6.2
+  - tensorflow
+  - umap-learn
   - pip:
       - adjustText
       - highlight-text
       - kloppy
       - mplsoccer
       - sphinxcontrib-youtube
+      - sphinx-gallery
       - myst-parser
+      - ruptures
