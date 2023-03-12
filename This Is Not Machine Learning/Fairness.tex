@@ -1,0 +1,121 @@
+
+
+
+
+
+\section{Fairness Through Awareness}
+
+Imagine your colleagues have created a supervised machine learning model to find people who might be interested in studying at a university in Sweden, based on their activity on a social networking site. Their algorithm either recommends or doesn't recommend the course to users. They have tested it on two different groups of people (600 non-Swedes and 1 200 Swedes), all of whom would be eligible for the course and have given permission for their data to be used. As a test, your colleagues first applied the method, then asked the potential students whether or not they would be interested in the course. To illustrate their results, they produced the confusion matrices shown in Table \ref{tab:SwNonSw} for non-Swedes and Swedes.
+
+
+\begin{table}
+\caption{Proportion of people shown and/or interested in a course for an imagined machine learning algorithm. The top table is for non-Swedes (in this case we can think of them as citizens of another country, but who are eligible to study in Sweden); the bottom table is for Swedes. \label{tab:SwNonSw}}\index{confusion matrix}
+	\centering
+\smallskip
+		\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}r|cc@{\extracolsep{\fill}}}
+\hline
+			&  Not Interested &  Interested  \\
+			\textbf{Non-Swedes} &  ($y=-1$)&  ($y=1$) \\
+\hline
+			Not recommended course ($\yhat(\bx) = -1$)  & TN = $300$ & FN = $100$ \\
+			Recommended course ($\yhat(\bx) = 1$) & FP = $100$ & TP = $100$  \\
+\\
+			&  Not Interested &  Interested  \\ %\hline
+\textbf{Swedes}  &   ($y=-1$)&  ($y=1$) \\ \hline
+			Not recommended course ($\yhat(\bx) = -1$)  & TN = $400$ & FN = $50$ \\
+			Recommended course ($\yhat(\bx) = 1$)& FP = $350$ & TP = $400$  \\
+\hline
+		\end{tabular*}
+		%\label{tab:loss
+		\vspace{-2em}
+\end{table}	
+	
+	
+Let's focus on the question of whether the algorithm performs equally well on both groups, non-Swedes and Swedes. We might call this property `fairness'. Does the method treat the two groups fairly? To answer this question, we first need to quantify fairness. One suggestion here would be ask if the method performs equally well for both groups. Referring to \cref{tab:confmatterm}, and \cref{ch:evaluation} in general, we see that one way of measuring performance is to use misclassification error. For \cref{tab:SwNonSw}, the misclassification error is $(100+100)/600=1/3$ for non-Swedes and $(50+350)/1\,200=1/3$ for Swedes. It has the same performance for both categories.
+
+\enlargethispage{-\baselineskip}
+
+It is now that alarm bells should start to ring about equating fairness with performance. If we look at the false negatives (FN) for both cases, we see that there are twice as many non-Swede FN cases as Swedish cases (100 vs. 50), despite their being twice as many Swedes as non-Swedes. This can be made more precise by calculating the false negative rate (or miss rate), i.e. FN/(TP+FN) (again see \cref{tab:confmatterm}). This is $100/(100+100)=1/2$ for non-Swedes and $50/(400+50)=1/9$ for Swedes. This new result can be put in context by noting that Swedes have a slightly greater tendency to be interested in the course (450 out of 1 200 vs. 200 out of 600). However, an interested non-Swede is 4.5 times more likely \textit{not} to be recommended the course than an interested Swede. A much larger difference than that observed in the original data.
+
+%\enlargethispage{1em}
+
+There are other fairness calculations we can do. Imagine we are concerned with intrusive advertising, where people are shown adverts that are uninteresting for them. The probability of experiencing a recommendation that is uninteresting is the false positive rate, FP/(TN+FP). This is $100/(300+100)=1/4$ for non-Swedes and $350/(350+400)=7/15$ for Swedes. Swedes receive almost twice as many unwanted recommendations as non-Swedes. Now it is the Swedes who are discriminated against!
+
+This is a fictitious example, but it serves to illustrate the first point we now want to make: \textit{There is no single function for measuring fairness}. In some applications, fairness is perceived as misclassification; in others it is false negative rates, and in others it is expressed in terms of false positives. It depends strongly on the application. If the data above had been for a criminal sentencing application, where `positives' are sentenced to longer jail terms, then problems with the false positive rate would have serious consequences for those sentenced on the basis of it. If it was for a medical test, where those individuals not picked up by the test had a high probability of dying, then the false negative rate is most important for judging fairness.
+
+As a machine learning engineer, you should never tell a client that your algorithm is fair. You should instead explain how your model performs in various aspects related to their conception of fairness. This insight is well captured by Dwork and colleagues' article, `Fairness Through Awareness' \parencite{dwork2012fairness}, which is recommended further reading. Being fair is about being aware of the decisions we make both in the design and in reporting the outcome of our model.
+
+
+\section{Complete Fairness Is Mathematically Impossible} \label{sec:nofairness}
+
+We now come to an even more subtle point: \textit{It is mathematically impossible to create models that fulfil all desirable fairness criteria}. Let's demonstrate this point with another example, this time using a real application. The Compas algorithm was developed by a private company, Northpointe, to help with criminal sentencing decisions. The model used logistic regression with input variables including age at first arrest, years of education, and questionnaire answers about family background, drug use, and other factors to predict an output variable as to whether the person would reoffend \parencite{sumpter2018outnumbered}. Race was not included in the model. Nonetheless, when tested -- as part of a a study by Julia Angwin and colleagues at Pro-Publica \parencite{larson2016we} -- on an independently collected data set, the model gave different predictions for black defendants than for white. The results are shown in the form of a confusion matrix in Table \ref{ch12:tab12.2}, for re-offending over the next two years.
+
+\begin{table}[!t]
+\caption{Confusion matrix for the Pro-Publica study of the Compas algorithm. For details see \textcite{larson2016we}.}\label{ch12:tab12.2}
+\smallskip		
+\centering
+		\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}r|cc@{\extracolsep{\fill}}}
+\hline
+			\textbf{Black defendants} &  Didn't reoffend ($y=-1$)&  Reoffended ($y=1$) \\ \hline
+			Lower risk ($\yhat(\bx) = -1$)  & TN = $990$ & FN = $532$ \\
+			Higher risk ($\yhat(\bx) = 1$)  & FP = $805$ & TP = $1\,369$  \\
+\\
+			\textbf{White defendants} &  Didn't reoffend ($y=-1$)&  Reoffended ($y=1$) \\ \hline
+			Lower risk ($\yhat(\bx) = -1$)  & TN = $1\,139$ & FN = $461$ \\
+			Higher risk ($\yhat(\bx) = 1$)  & FP = $349$ & TP = $505$  \\
+\hline
+		\end{tabular*}
+		%\label{tab:loss}
+\end{table}		
+	
+Angwin and her colleagues pointed out that the false positive rate for black defendants, $805/(990+805)=44.8$\%, is almost double that of white defendants, $349/(349+1\,139)=23.4$\%. This difference cannot be accounted for simply by overall reoffending rates: although this is higher for black defendants (at 51.4\% arrested for another offence within two years), when compared to white defendants (39.2\%), these differences are smaller than the differences in false positive rates. On this basis, the model is clearly unfair. The model is also unfair in terms of true positive rate (recall). For black defendants, this is $1\,369/(532+1369)=72.0$\% versus $505/(505+461)=52.2$\% for white defendants. White offenders who go on to commit crimes are more likely to be classified as lower risk.
+
+\enlargethispage{2em}
+
+In response to criticism about the fairness of their method, the company Northpointe countered that in terms of performance, the precision (positive predictive value) was roughly equal for both groups: $1\,369/(805+1369)=63.0$\% for black defendants and $505/(505+349)=59.1$\% for white \parencite{sumpter2018outnumbered}. In this sense the model is fair, in that it has the same performance for both groups. Moreover, Northpointe argued that it is precision which is required, by law, to be equal for different categories. Again this is the problem we highlighted above, but now with serious repercussions for the people this algorithm is applied to: black people who won't later reoffend are more likely to classified as high risk than white people.
+
+Would it be possible (in theory) to create a model that was fair in terms of both false positives and precision? To answer this question, consider the confusion matrix in Table \ref{ch12:tab12.3}.
+	\begin{table}[!t]
+\caption{Generic confusion matrix.}\label{ch12:tab12.3}
+\smallskip
+\centering
+		\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}r|cc@{\extracolsep{\fill}}}
+\hline
+			\textbf{Category 1} &  Negative $y=-1$ &  Positive $y=1$ \\ \hline
+			Predicted negative ($\yhat(\bx) = -1$)  & $n_1-f_1$ & $p_1-t_1$ \\
+			Predicted positive ($\yhat(\bx) = 1$)  & $f_1$ & $t_1$  \\\\
+			\textbf{Category 2} &  Negative $y=-1$ &  Positive $y=1$ \\ \hline
+			Predicted negative ($\yhat(\bx) = -1$)  & $n_2-f_2$ & $p_2-t_2$ \\
+			Predicted positive ($\yhat(\bx) = 1$)  & $f_2$ & $t_2$  \\
+\hline
+		\end{tabular*}
+		%\label{tab:loss
+	\end{table}
+
+\pagebreak
+Here, $n_i$ and $p_i$ are the number of individuals in the negative and positive classes, and $f_i$ and $t_i$ are the number of false and true positives, respectively. The values of $n_i$ and $p_i$ are beyond the modeller's control; they are determined by outcomes in the real world (does a person develop cancer, commit a crime, etc.). The values $f_i$ and $t_i$ are determined by the machine learning algorithm. For each category 1, we are constrained by a tradeoff between $f_1$ and $t_1$, i.e. as determined by the ROC for model 1. A similar constraint applies to category 2. We can't make our model arbitrarily accurate.
+
+However, we can (potentially using the ROC for each category as a guide) attempt to tune $f_1$ and $f_2$ independently of each other.
+In particular, we can ask that our model has the same false positive rate for both categories, i.e. $f_1/n_1=f_2/n_2$, or
+\begin{equation}
+f_1 = \frac{n_1 f_2}{n_2}. \label{eq:practice:fequality}
+\end{equation}
+In practice, such a balance may be difficult to achieve, but our purpose here is to show that limitations exist even when we can tune our model in this way. Similarly, let's assume we can specify that the model has the same true positive rate (recall) for both categories,
+\begin{equation}
+t_1= \frac{p_1 t_2}{p_2}. \label{eq:practice:tequality}
+\end{equation}
+Equal precision of the model for both categories is determined by $t_1/(t_1+f_1)=t_2/(t_2+f_2)$. Substituting \eqref{eq:practice:fequality} and \eqref{eq:practice:tequality} in to this equality gives
+\[
+\frac{ t_2}{t_2+ \frac{p_2 n_1 f_2}{p_1 n_2}}=\frac{t_2}{t_2+f_2},
+\]
+which holds only if $f_1=f_2=0$ or if
+\begin{equation}
+\frac{p_1}{n_1}=\frac{p_2}{n_2}. \label{eq:practice:precisionequality}
+\end{equation}
+In words, Equation \eqref{eq:practice:precisionequality} implies that we can only achieve equal precision when the classifier is perfect on the positive class or when the ratios of positive numbers of people in the positive and negative classes for both categories are equal. Both of these conditions are beyond our control as modellers. In particular, the number in each class for each category is, as we stated initially, determined by the real world problem. Men and women suffer different medical conditions at different rates; young people and old people have different interests in advertised products; and different ethnicities experience different levels of systemic racism.  These differences cannot be eliminated by a model.
+
+In general, the analysis above shows that it is impossible to achieve simultaneous equality in precision, true positive rate, and false positive rate. If we set our parameters so that our model is fair for two of these error functions, then we always find the condition in \eqref{eq:practice:precisionequality} as a consequence of the third.\vadjust{\pagebreak} Unless all the positive and negative classes occur at the same rate for both classes, then achieving fairness in all three error functions is impossible. The result above has been refined by Kleinberg and colleagues, where they include properties of the classifier, $f(x)$, in their derivation \parencite{kleinberg2018algorithmic}.
+
+Various methods have been suggested by researchers to attempt to achieve results as close as possible to all three fairness criteria. We do not, however, discuss them here, for one simple reason. We wish to emphasise that solving `fairness' is not primarily a technical problem. The ethics through awareness paradigm emphasises our responsibility as engineers to be aware of these limitations and explain them to clients, and a joint decision should be made on how to navigate the pitfalls.
+
+

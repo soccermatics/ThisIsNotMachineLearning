@@ -1,0 +1,153 @@
+\documentclass[12pt]{book}
+\usepackage[width=4.375in, height=7.0in, top=1.0in, papersize={5.5in,8.5in}]{geometry}
+\usepackage[pdftex]{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tipa}
+%\usepackage{txfonts}
+\usepackage{textcomp}
+%\usepackage{amsthm}
+%\usepackage{array}
+%\usepackage{xy}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
+\fancyhf{}
+\fancyhead[LE,RO]{\bfseries\thepage}
+\fancyhead[LO]{\bfseries\rightmark}
+\fancyhead[RE]{\bfseries\leftmark}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0pt}
+\addtolength{\headheight}{0.5pt}
+\setlength{\footskip}{0in}
+\renewcommand{\footruleskip}{0pt}
+\fancypagestyle{plain}{%
+\fancyhead{}
+\renewcommand{\headrulewidth}{0pt}
+}
+%
+%\parindent 0in
+\parskip 0.05in
+%
+\begin{document}
+\frontmatter
+%
+\chapter*{\HUGE \center This is not machine learning \\ \Large A relational ethics approach to mathematical modelling}
+\thispagestyle{empty}
+%{\hspace{0.25in} \includegraphics{./ru_sun.jpg} }
+\section*{\large \center Abeba Bihrane and David J. T. Sumpter}
+\newpage
+\subsection*{\center \normalsize Copyright \copyright 2023 by Abeba Bihrane and David Sumpter}}
+\subsection*{\center \normalsize All rights reserved.}
+\subsection*{\center \normalsize ISBN \dots}
+\subsection*{\center \normalsize \dots Publications}
+%
+\chapter*{\center \normalsize To }
+%
+\tableofcontents
+%
+\mainmatter
+%
+\chapter{Introduction}
+% your text here
+
+\input{Introduction.tex}
+%
+
+
+\chapter{Complexity, Modelling and  Relational Ethics}
+% your text here
+%
+
+\input{Complexity.tex}
+
+\chapter{Closing a system}
+% your text here
+%
+
+
+\input{Closed.tex}
+%
+
+
+
+\chapter{The open approach}
+% your text here
+%
+
+\label{chap:Open}
+
+\input{Open.tex}
+
+\chapter{Relational ethics}
+% your text here
+%
+
+\input{Relational.tex}
+
+
+\chapter{Limits of prediction}
+% your text here
+%
+\ref{chap:Prediction}
+
+\input{Prediction.tex}
+
+
+\chapter{Fairness}
+% your text here
+%
+
+\input{Fairness.tex}
+
+
+\chapter{Bias}
+% your text here
+%
+
+
+\input{Bias.tex}
+%
+
+
+\chapter{Feedback and Consequences}
+% your text here
+%
+
+
+\input{Feedbacks.tex}
+%
+
+\chapter{Generalisation}
+% your text here
+%
+
+
+\chapter{Information, Perplexity and Scaling Up}
+% your text here
+%
+
+
+
+\chapter{Hype}
+
+\input{Hype.tex}
+
+
+\chapter{Artificial General Intelligence}
+% your text here
+%
+
+\input{AGI.tex}
+
+
+\backmatter
+%
+
+\bibliographystyle{plain}
+%\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}

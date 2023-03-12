@@ -1,0 +1,47 @@
+
+body {
+    background-color: lightgrey;
+    color: black;
+  }
+
+a:link { color: #C43733; } /* CSS link color (red) */
+
+a:visited { color: #6b4342; } /* CSS link color (grey) */
+
+
+.wy-side-nav-search {
+    background-color: #ffffff;
+}
+
+.wy-side-nav-search input[type=text] {
+    background: #E6E6E6;
+    border-color: #ED6E2D
+}
+
+.wy-nav-top {
+    background: #ED6E2D
+}
+
+.wy-nav-side {
+    background: #E6E6E6
+}
+
+.wy-menu-vertical a {
+    color: #ED6E2D;
+}
+
+.wy-menu-vertical a:hover {
+    background-color: #c8c8c8;
+}
+
+.rst-versions {
+    border-top: solid 10px #C43733;
+}
+
+.rst-versions .rst-current-version {
+    background-color: #C43733;
+}
+
+a:hover {
+    text-decoration: underline !important;
+}

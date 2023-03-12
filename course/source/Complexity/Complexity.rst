@@ -1,0 +1,345 @@
+.. role:: raw-latex(raw)
+   :format: latex
+..
+
+This book uses three ideas: (1) critical complexity to assess the limits
+of models; (2) a modelling approach that combines machine-learning and
+mechanistic models; and (3) relational ethics to look at how modellers
+engage (and sometimes fails to engage) with the world. In this chapter,
+we give a broad outline of these three ideas, on which we will build
+upon as we go.
+
+Critical complexity
+===================
+
+Biological and social systems are complex. The human brain and our other
+organs; the web of soical interactions over the Internet; the structure
+of a large buisness or the activities at a University; the ecosystems we
+live in and are part of; the growth of an embryo; the inner workings of
+an ant colony or the movement of a fish school. Each one of these
+systems consist of interacting units that produce patterns far more
+complex than the units themselves. They are shaped by history. They are
+messy and difficult to characterise. It is difficult to know where they
+start and end.
+
+The scientific challenge is to use the fact that a system is complex to
+help us better understand it. Sometimes, when we say that a system is
+complicated when we mean that our insight in to that system is limited.
+A complex system is difficult to understand. What then can be gained by
+thinking in terms of complexity science?
+
+The answer to that question, which we underlies the approach taken in
+this course, comes in the form of **critical complexity**. The term
+critical complexity arises out of the work of philosophers Paul
+Cilliers :cite:p:`cilliers2002complexity,cilliers2016critical,cilliers2005complexity`,
+Alicia
+Juarrero :cite:p:`juarrero1999dynamicsbook,juarrero2000dynamics`
+and Rika
+Preiser :cite:p:`preiser2012problem,preiser2013deconstruction`.
+These philosophers emphasise the need to embrace the ambiguous, messy,
+fluid, non-determinable, contextual, and historical nature of complex
+systems. They describe complex phenomena as unfinalizible and
+inexhaustible. Complex systems are open-ended, which means there is no
+way of making an uncontested description of that system. There are
+always new and different ways of looking at the system.
+
+A way of visualising this description of a complex system is provided by
+Di Paolo et al. (2018) and reproduced in figure `1 <#fig:Complexity>`__.
+In the figure, the agents (circles) in a complex system interact
+(straight arrows) with each other, their environment (wavy lines), which
+is partially open and ever-changing, and these interactions are
+continually adjusted (curved arrows) by the agents themselves.
+
+.. figure:: Figures/Complexity/Complexity.png
+   :alt: 
+   :width: 10cm
+
+If we were to now try to model such a system, or describe some aspect of
+it, we are forced to make choices about what is inside our model and
+what is outside. The figure below illustrates such choices, with the
+blue squares representing ways in which we have closed the system in
+order to make a model.
+
+.. figure:: Figures/Complexity/ModelsOfComplexity.pdf
+   :alt: 
+   :width: 12cm
+
+In figure `2 <#fig:ModelsOfComplexity>`__ (a) we focus on the individual
+agents and how they behave, so we create a model which describes their
+properties and makes simplifying assumptions about how they interact
+with each other and the world. Here, the agents are inside the model,
+while their interactions and the environment is outside. In figure
+`2 <#fig:ModelsOfComplexity>`__\ (b) we focus instead on the
+interactions between the agents and in (c) we look at the effect the
+agents have on their environment. Again, in both these cases, we make
+simplifying assumptions about things on the outside in order to create a
+model of the inner workings of one part of the system.
+
+It is in this way that complex phenomena are unfinalizible and
+inexhaustible. There are infinitely many ways of building up models of a
+system, each which leaves something outside. A model is like a snapshot
+of a landscape and no single snapshot tells the whole story. For
+modelling the human body, for example, “a portrait of a person, a store
+mannequin, and a pig can all be models”
+ :cite:p:`blanchard2011differential`. None is a perfect
+representation, but each can be the best model for a human, depending on
+whether one wants to remember an old friend, to buy clothes, or to study
+anatomy.
+
+The critical complexity view says that, because complex systems cannot
+not be completely measured and carry their history with them, there is
+always a new and different way of looking at them. A few years (or even
+days) after a portrait is drawn, a person is no longer the same as they
+were then. We can even talk about their relationship to that portrait,
+how it shapes their view of the world as they age. The act of modelling,
+of discussing and analysing changes the world itself. We can never fully
+capture reality in a single snapshot.
+
+The exception to this rule is illustrated in figure
+`2 <#fig:ModelsOfComplexity>`__\ (d), in which we make a model of the
+entire system. Cilliers argues that such a model *is* the system itself.
+To create such a model, we would need to describe every historical,
+sociological, biological and physical detail of that system. We would
+even have to include ourselves studying the system in the model. It is
+impossible in practice to build such a model and it would be equally
+impossible to make use of the model or understand what it is telling us.
+
+The use of the word ’critical’ in ’critical complexity’ thus refers to
+an activity of criticising a failure to recognise limitations in our
+models and of thinking carefully about the way we approach modelling. It
+is this approach we take throughout this book. We see the world as
+complex in the sense that it is ambiguous, unfinalizible and
+inexhaustible. And we are critical of ways in which modellers can fail
+to recognise complexity and the consequences such failure has on how
+models are used in society.
+
+.. _`sec:mathmodels`:
+
+Machine learning and modelling
+==============================
+
+Machine learning is an approach to building models of both simple and
+complex systems. Let’s illustrate how some of these methods work. Not in
+mathematical detail, but conceptually.
+
+.. figure:: Figures/Complexity/SupervisedLearning.pdf
+   :alt: 
+   :width: 10cm
+
+The most well-known method is *supervised machine learning*. The idea
+here is to learn
+
+In the interactive worksheet (LINK), we give an example of a supervised
+learning method (logistic regression) in football. MORE
+
+.. figure:: Figures/Complexity/UnsupervisedLearning.pdf
+   :alt: 
+   :width: 10cm
+
+In *unsupervised machine learning* ...
+
+In the interactive worksheet (LINK), we provide an example of
+categorising a group of people based on their interests using principal
+component analysis (PCA). MORE HERE.
+
+There are a variety of methods for unsupervised learning.
+
+In *mechanistic modelling*.
+
+.. figure:: Figures/Complexity/Mechanism.pdf
+   :alt: 
+   :width: 10cm
+
+In the interactive worksheet (LINK), we provide an example of a
+mechanistic model of disease spread using an SIR model.
+
+Return to football example. This time with the angle.
+
+OTHER EXAMPLES
+
+An open approach
+================
+
+In this book, we take an approach to mathematical modelling and machine
+learning that builds upon figure `2 <#fig:ModelsOfComplexity>`__. We
+will start from the assumption that there is no unique way of viewing a
+complex system, but many different views, each of which gives a
+different insight. Moreover, we assume that applying a mathematical
+model is akin to using a camera to take a picture of a system. Figures
+`3 <#fig:SupervisedLearning>`__, `4 <#fig:UnsupervisedLearning>`__ and
+`5 <#fig:Mechanism>`__ give an outline of how some these different
+cameras are built, while the examples in the previous section show in
+more detail how they work.
+
+In the next chapter we focus on identifying ways in which models close
+systems. Some systems — board games, short scale weather prediction,
+specific datasets and to some extent, biological processes, such as
+protein folding — are amenable to closure. We can define where a closed
+system starts and ends and draw a box around it, which defines its
+inputs, its outputs and its function. It is conceptually straightforward
+(although often technically challenging) to build models of these closed
+systems, which help us understand their properties and predict how they
+will behave. Then, in chapter `[chap:Open] <#chap:Open>`__, we look at
+other systems — football matches, the Hollywood film industry, the
+movement of animal groups, outcomes of peoples lives, changes in
+society— that are open. It is much harder to build models of these
+systems, both conceptually and in practice. In many cases it is
+impossible.
+
+We will argue that the best way to approach complex, open systems is by
+constructing a wide variety of views. Adopting this approach leads us to
+a central theme in this book: that when we make choices about which
+camera to use and which view to take, we cannot escape the fact we are
+including ourselves in the modelling process. There is no single,
+objective view to take of these systems. Our values and our ethical
+choices become part of the modelling process.
+
+Thus, when we look at the technical possibilities and limitations of
+modelling, we also have to consider ethics and values. We will explain
+this approach, known as relational ethics, in more detail in chapter
+`[chap:Relational] <#chap:Relational>`__. But in order to allow the
+reader to see where we are going with the examples of open and closed
+systems in the next two chapters, we now give a broad outline of the
+central idea of relational ethics.
+
+.. _relational:
+
+Relational Ethics
+=================
+
+Relationalism is the idea that morality is an interactive property
+established between two or more individuals :cite:p:`metz2016relational`. More concretely, the relational
+approach can be framed in terms of the Ubuntu world view that “I am
+because we are, and since we are, therefore I am” :cite:p:`mbiti1969african`. Ubuntu is an African philosophy,
+best known in the West through Archbishop Desmond Tutu’s speech *No
+Future Without Forgiveness*, in which he said,
+
+   I am fully me only if you are all you can be. Anger, resentment,
+   nursing grudges corrode, subvert the summum bonum, the great good of
+   the African worldview of communal harmony and they eat away at the
+   very vitals. To forgive is not being altruistic; it is the best form
+   of self-interest. You know what happens to your blood pressure when
+   you are caught in a traffic jam, “How come they let all those morons
+   drive a car?” To forgive is good for your physical health as it is
+   for your spiritual health.
+
+Tutu’s description of Ubuntu has parallels to the view of a complex
+system we saw in figure `1 <#fig:Complexity>`__. It asks us to think of
+ourselves, when stuck in a traffic jam, as both consisting of a
+biochemical system (measured by our blood pressure) and as part of an
+overall social system, our interactions with the other drivers. When
+analysing the morality of a situation (even one as terrible as
+Apartheid), Tutu’s allegory says we should not just focus on one level,
+but instead take a view of the various relationships within the system.
+Just as we should remember that our models capture only one part a
+larger system or omit detail at a lower level (as in figure
+`2 <#fig:ModelsOfComplexity>`__), it is a mistake to analyse traffic
+jams only in terms of “moron” drivers.
+
+Relational frameworks emphasize the importance of dependencies. For
+example, Kyselo  :cite:p:`kyselo2014body` contends that the
+self is social through and through. We become ourselves and sustain
+ourselves together with others. Similarly, Bakhtin
+ :cite:p:`bakhtin1984problems` says that only through
+encounters with others, can we appreciate our own perspectives and form
+a coherent image of ourselves as a whole entity. By *‘looking through
+the screen of the other’s soul,’* he wrote, *‘I vivify my exterior’*.
+Selfhood and knowledge are evolving and dynamic; the self is never
+finished – it is an open book  :cite:p:`birhane2017descartes`.
+
+Consider these relational views of our place in society in the context
+of, for example, predictive policing. The view taken when creating an
+algorithm to predict crime locations in a city is similar to that of
+Batman, patrolling a society from the outside and viewing crimes from
+above in terms of hot spots on a map. Instead of being part of the
+community, the predictive policing view is disconnected from it. Batman
+is alienated from those he should serve. As we shall see in chapter
+`[chap:Prediction] <#chap:Prediction>`__, this alienation leads to poor
+predictions and stereotyping in the use of predictive policing. In order
+to create successful models of society, we need to consider our own (and
+our models) place in it.
+
+In the context of such examples, a particularly important relational
+approach is Afro-feminism thought. This approach maintains that the most
+reliable form of knowledge, especially in relation to social and
+historical injustices, is grounded in lived experience. Patricia Hill
+Collins  :cite:p:`collins2002black`, emphasizes that people do
+not see the world in abstract forms from a distance, but instead
+knowledge and understanding emerge from concrete lived experiences. The
+Afro-feminist approach contends that concrete experiences are primary
+and abstract reasoning (including modelling) is secondary. Knowing and
+being are active processes, that are necessarily political and ethical.
+
+According to the approach outlined by Collins, mathematical models (such
+as those we discussed in section `2 <#sec:mathmodels>`__) do not take
+precedence over the actual experience of a person. Modelling cannot be
+carried out in isolation from others, but should be developed in
+dialogue with the community it impacts. This is especially important
+when the type of knowledge in question concerns oppression, structural
+discrimination, and racism. The Afro-feminist approach maintains that
+concepts such as ethics and justice need to be grounded in concrete
+events informed by lived experience of the most marginalized,
+individuals and communities. We will return to Afro-feminism in more
+detail in section `[sec:Afro-feminism] <#sec:Afro-feminism>`__.
+
+In a similar vein to Afro-feminist thought, the enactive cognitive
+science theory of participatory sense-making
+ :cite:p:`de2007participatory` advocates for an active and
+engaged knowing rooted in our relating. A proponent of this position,
+Hanne De Jaegher  :cite:p:`de2019loving`, contends that our
+most sophisticated human knowing lies in how we engage with each other.
+In *‘Loving and knowing: Reflections for an engaged epistemology’*, De
+Jaegher  :cite:p:`de2019loving` emphasizes that discrete,
+rational knowing comes at the detriment of *Knowing-in-connection*. Far
+from a distant and “objective” discretising logic, knowing is an
+activity that happens in the relationship between the knower and the
+known. Proposing an understanding of human knowing in analogy with
+loving, De Jaegher argues that in knowing, like loving, what happens is
+not neutral, general, or universal. Knowers, like lovers, are not
+abstract subjects but are particular and concrete. “*Who loves
+matters*.” And both loving and knowing take place in the relation
+between them  :cite:p:`de2019loving`.
+
+Human knowing is based not on purely rational logic, as the rational
+worldview assumes, but on living and connected know-hows. “Our most
+sophisticated knowing”, according to De Jaegher, “*is full of
+uncertainty, inconsistencies, and ambiguities*.” One of the consequences
+of prioritizing reason is that knowledge of the world and of other
+people becomes something that is rooted in the individual person’s
+rational reasoning – in direct contrast to engaged, active, involved,
+and implicated knowing. Humans are inherently historical, social,
+cultural, gendered, politicized, and contextualized organisms.
+Accordingly, their knowing and understanding of the world around them
+necessarily takes place through their respective lenses.
+
+People are not solo cognizers that manipulate symbols in their heads and
+perceive their environment in a passive way, as the rationalist view
+would suggest, but they actively engage with the world around them in a
+meaningful and unpredictable way. Living bodies, according to Di Paolo,
+Cuffari, and De Jaegher  :cite:p:`di2018linguistic`, are
+processes, practices, and networks of relations which have “more in
+common with hurricanes than with statues”. They are unfinished and
+always becoming, marked by\ *“innumerable relational possibilities,
+potentialities and virtualities”* and not calculable entities whose
+behaviour can neatly be categorized and predicted in a precise way.
+Bodies: “...grow, develop, and die in ongoing attunement to their
+circumstances... Human bodies are path-dependent, plastic, nonergodic,
+in short, historical. There is no true averaging of them.”
+:raw-latex:`\citep[p.97]{di2018linguistic}`.
+
+TEXT ABOVE (FROM ABEBA THESIS) SHOULD BE SHORTENED.
+
+Relational perspectives thus view existence in terms of a complex web of
+social relations. Thus, as in critical complexity, they highlight the
+impossibility of any unambiguous separation of the real-world, the
+models we build of a system, and our human values. Afro-feminsism, in
+particular, emphasises an inherent connection between how one thinks
+(builds models) and what one does (how models are used and impact
+society). It is impossible to build a model of reality without taking a
+specific view and thus adopting an ethical standpoint. Batman beware.
+
+
+Bibliography
+============
+
+.. bibliography:: ../refs.bib

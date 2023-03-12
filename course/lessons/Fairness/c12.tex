@@ -1,0 +1,365 @@
+
+\chapter{Ethics in Machine Learning}\label{ch:ethics}
+
+\textbf{by David Sumpter\footnote{Please cite this chapter as Sumpter (2021) \textbf{Ethics in machine learning}, In: \textit{Machine Learning: A~First Course for Engineers and Scientists}, Cambridge University Press}} \\%(or something similar!)
+
+\noindent In this chapter, we give three examples of ethical challenges that arise in connection to machine learning applications. These are all examples where an apparently `neutral' design choice in how we implement or measure the performance of a machine learning model leads to an unexpected consequence for its users or for society. For each case study, we give concrete application examples. In general, we will emphasise an \textit{ethics through awareness} approach, where instead of attempting a technical solution to ethical dilemmas, we explain how they impact our role as machine learning engineers.
+
+There are many more ethical issues that arise from applications of machine learning than are covered in this chapter. These range from legal issues of privacy of medical and social data collected on individuals \parencite{pasquale2015black}; through on-line advertising which, for example, identifies the most vulnerable people in society and targets them with adverts for gambling, unnecessary health services, and high interest loans \parencite{o2016weapons};  to the use of machine learning to develop weapons and oppressive technology \parencite{russell2015ethics}. In addition to this, there is significant evidence of gender and racial discrimination in the tech industry \parencite{alfrey2017gender}.
+
+These issues are important (in many cases more important to society than the issues we cover here), and the qualified data scientist should have become aware of them. But they are largely beyond the scope of this book. Instead, here we look specifically at examples where the technical properties of the machine learning techniques we have learnt so far become unexpectedly intertwined with ethical issues. It turns out that just this narrow subset of challenges is still substantial in size.
+
+\section{Fairness and Error Functions}\label{ch12:sec12.1}
+
+At first sight, the choice of an error function \eqref{eq:errorf} might appear an entirely technical issue, without any ethical ramifications. After all, the aim of the error function is to find out how well a model has performed on test data. It should be chosen so that we can tell whether our method works as we want it to. We might (naively) assume that a technical decision of this nature is neutral. To investigate how such an assumption plays out, let's look at an example.
+
+\subsection{Fairness Through Awareness}
+
+Imagine your colleagues have created a supervised machine learning model to find people who might be interested in studying at a university in Sweden, based on their activity on a social networking site. Their algorithm either recommends or doesn't recommend the course to users. They have tested it on two different groups of people (600 non-Swedes and 1 200 Swedes), all of whom would be eligible for the course and have given permission for their data to be used. As a test, your colleagues first applied the method, then asked the potential students whether or not they would be interested in the course. To illustrate their results, they produced the confusion matrices shown in Table \ref{tab:SwNonSw} for non-Swedes and Swedes.
+
+
+\begin{table}
+\caption{Proportion of people shown and/or interested in a course for an imagined machine learning algorithm. The top table is for non-Swedes (in this case we can think of them as citizens of another country, but who are eligible to study in Sweden); the bottom table is for Swedes. \label{tab:SwNonSw}}\index{confusion matrix}
+	\centering
+\smallskip
+		\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}r|cc@{\extracolsep{\fill}}}
+\hline
+			&  Not Interested &  Interested  \\
+			\textbf{Non-Swedes} &  ($y=-1$)&  ($y=1$) \\
+\hline
+			Not recommended course ($\yhat(\bx) = -1$)  & TN = $300$ & FN = $100$ \\
+			Recommended course ($\yhat(\bx) = 1$) & FP = $100$ & TP = $100$  \\
+\\
+			&  Not Interested &  Interested  \\ %\hline
+\textbf{Swedes}  &   ($y=-1$)&  ($y=1$) \\ \hline
+			Not recommended course ($\yhat(\bx) = -1$)  & TN = $400$ & FN = $50$ \\
+			Recommended course ($\yhat(\bx) = 1$)& FP = $350$ & TP = $400$  \\
+\hline
+		\end{tabular*}
+		%\label{tab:loss
+		\vspace{-2em}
+\end{table}	
+	
+	
+Let's focus on the question of whether the algorithm performs equally well on both groups, non-Swedes and Swedes. We might call this property `fairness'. Does the method treat the two groups fairly? To answer this question, we first need to quantify fairness. One suggestion here would be ask if the method performs equally well for both groups. Referring to \cref{tab:confmatterm}, and \cref{ch:evaluation} in general, we see that one way of measuring performance is to use misclassification error. For \cref{tab:SwNonSw}, the misclassification error is $(100+100)/600=1/3$ for non-Swedes and $(50+350)/1\,200=1/3$ for Swedes. It has the same performance for both categories.
+
+\enlargethispage{-\baselineskip}
+
+It is now that alarm bells should start to ring about equating fairness with performance. If we look at the false negatives (FN) for both cases, we see that there are twice as many non-Swede FN cases as Swedish cases (100 vs. 50), despite their being twice as many Swedes as non-Swedes. This can be made more precise by calculating the false negative rate (or miss rate), i.e. FN/(TP+FN) (again see \cref{tab:confmatterm}). This is $100/(100+100)=1/2$ for non-Swedes and $50/(400+50)=1/9$ for Swedes. This new result can be put in context by noting that Swedes have a slightly greater tendency to be interested in the course (450 out of 1 200 vs. 200 out of 600). However, an interested non-Swede is 4.5 times more likely \textit{not} to be recommended the course than an interested Swede. A much larger difference than that observed in the original data.
+
+%\enlargethispage{1em}
+
+There are other fairness calculations we can do. Imagine we are concerned with intrusive advertising, where people are shown adverts that are uninteresting for them. The probability of experiencing a recommendation that is uninteresting is the false positive rate, FP/(TN+FP). This is $100/(300+100)=1/4$ for non-Swedes and $350/(350+400)=7/15$ for Swedes. Swedes receive almost twice as many unwanted recommendations as non-Swedes. Now it is the Swedes who are discriminated against!
+
+This is a fictitious example, but it serves to illustrate the first point we now want to make: \textit{There is no single function for measuring fairness}. In some applications, fairness is perceived as misclassification; in others it is false negative rates, and in others it is expressed in terms of false positives. It depends strongly on the application. If the data above had been for a criminal sentencing application, where `positives' are sentenced to longer jail terms, then problems with the false positive rate would have serious consequences for those sentenced on the basis of it. If it was for a medical test, where those individuals not picked up by the test had a high probability of dying, then the false negative rate is most important for judging fairness.
+
+As a machine learning engineer, you should never tell a client that your algorithm is fair. You should instead explain how your model performs in various aspects related to their conception of fairness. This insight is well captured by Dwork and colleagues' article, `Fairness Through Awareness' \parencite{dwork2012fairness}, which is recommended further reading. Being fair is about being aware of the decisions we make both in the design and in reporting the outcome of our model.
+
+
+\subsection{Complete Fairness Is Mathematically Impossible} \label{sec:nofairness}\index{error function}\index{fairness}
+
+We now come to an even more subtle point: \textit{It is mathematically impossible to create models that fulfil all desirable fairness criteria}. Let's demonstrate this point with another example, this time using a real application. The Compas algorithm was developed by a private company, Northpointe, to help with criminal sentencing decisions. The model used logistic regression with input variables including age at first arrest, years of education, and questionnaire answers about family background, drug use, and other factors to predict an output variable as to whether the person would reoffend \parencite{sumpter2018outnumbered}. Race was not included in the model. Nonetheless, when tested -- as part of a a study by Julia Angwin and colleagues at Pro-Publica \parencite{larson2016we} -- on an independently collected data set, the model gave different predictions for black defendants than for white. The results are shown in the form of a confusion matrix in Table \ref{ch12:tab12.2}, for re-offending over the next two years.
+
+\begin{table}[!t]
+\caption{Confusion matrix for the Pro-Publica study of the Compas algorithm. For details see \textcite{larson2016we}.}\label{ch12:tab12.2}
+\smallskip		
+\centering
+		\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}r|cc@{\extracolsep{\fill}}}
+\hline
+			\textbf{Black defendants} &  Didn't reoffend ($y=-1$)&  Reoffended ($y=1$) \\ \hline
+			Lower risk ($\yhat(\bx) = -1$)  & TN = $990$ & FN = $532$ \\
+			Higher risk ($\yhat(\bx) = 1$)  & FP = $805$ & TP = $1\,369$  \\
+\\
+			\textbf{White defendants} &  Didn't reoffend ($y=-1$)&  Reoffended ($y=1$) \\ \hline
+			Lower risk ($\yhat(\bx) = -1$)  & TN = $1\,139$ & FN = $461$ \\
+			Higher risk ($\yhat(\bx) = 1$)  & FP = $349$ & TP = $505$  \\
+\hline
+		\end{tabular*}
+		%\label{tab:loss}
+\end{table}		
+	
+Angwin and her colleagues pointed out that the false positive rate for black defendants, $805/(990+805)=44.8$\%, is almost double that of white defendants, $349/(349+1\,139)=23.4$\%. This difference cannot be accounted for simply by overall reoffending rates: although this is higher for black defendants (at 51.4\% arrested for another offence within two years), when compared to white defendants (39.2\%), these differences are smaller than the differences in false positive rates. On this basis, the model is clearly unfair. The model is also unfair in terms of true positive rate (recall). For black defendants, this is $1\,369/(532+1369)=72.0$\% versus $505/(505+461)=52.2$\% for white defendants. White offenders who go on to commit crimes are more likely to be classified as lower risk.
+
+\enlargethispage{2em}
+
+In response to criticism about the fairness of their method, the company Northpointe countered that in terms of performance, the precision (positive predictive value) was roughly equal for both groups: $1\,369/(805+1369)=63.0$\% for black defendants and $505/(505+349)=59.1$\% for white \parencite{sumpter2018outnumbered}. In this sense the model is fair, in that it has the same performance for both groups. Moreover, Northpointe argued that it is precision which is required, by law, to be equal for different categories. Again this is the problem we highlighted above, but now with serious repercussions for the people this algorithm is applied to: black people who won't later reoffend are more likely to classified as high risk than white people.
+
+Would it be possible (in theory) to create a model that was fair in terms of both false positives and precision? To answer this question, consider the confusion matrix in Table \ref{ch12:tab12.3}.
+	\begin{table}[!t]
+\caption{Generic confusion matrix.}\label{ch12:tab12.3}
+\smallskip
+\centering
+		\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}r|cc@{\extracolsep{\fill}}}
+\hline
+			\textbf{Category 1} &  Negative $y=-1$ &  Positive $y=1$ \\ \hline
+			Predicted negative ($\yhat(\bx) = -1$)  & $n_1-f_1$ & $p_1-t_1$ \\
+			Predicted positive ($\yhat(\bx) = 1$)  & $f_1$ & $t_1$  \\\\
+			\textbf{Category 2} &  Negative $y=-1$ &  Positive $y=1$ \\ \hline
+			Predicted negative ($\yhat(\bx) = -1$)  & $n_2-f_2$ & $p_2-t_2$ \\
+			Predicted positive ($\yhat(\bx) = 1$)  & $f_2$ & $t_2$  \\
+\hline
+		\end{tabular*}
+		%\label{tab:loss
+	\end{table}
+
+\pagebreak
+Here, $n_i$ and $p_i$ are the number of individuals in the negative and positive classes, and $f_i$ and $t_i$ are the number of false and true positives, respectively. The values of $n_i$ and $p_i$ are beyond the modeller's control; they are determined by outcomes in the real world (does a person develop cancer, commit a crime, etc.). The values $f_i$ and $t_i$ are determined by the machine learning algorithm. For each category 1, we are constrained by a tradeoff between $f_1$ and $t_1$, i.e. as determined by the ROC for model 1. A similar constraint applies to category 2. We can't make our model arbitrarily accurate.
+
+However, we can (potentially using the ROC for each category as a guide) attempt to tune $f_1$ and $f_2$ independently of each other.
+In particular, we can ask that our model has the same false positive rate for both categories, i.e. $f_1/n_1=f_2/n_2$, or
+\begin{equation}
+f_1 = \frac{n_1 f_2}{n_2}. \label{eq:practice:fequality}
+\end{equation}
+In practice, such a balance may be difficult to achieve, but our purpose here is to show that limitations exist even when we can tune our model in this way. Similarly, let's assume we can specify that the model has the same true positive rate (recall) for both categories,
+\begin{equation}
+t_1= \frac{p_1 t_2}{p_2}. \label{eq:practice:tequality}
+\end{equation}
+Equal precision of the model for both categories is determined by $t_1/(t_1+f_1)=t_2/(t_2+f_2)$. Substituting \eqref{eq:practice:fequality} and \eqref{eq:practice:tequality} in to this equality gives
+\[
+\frac{ t_2}{t_2+ \frac{p_2 n_1 f_2}{p_1 n_2}}=\frac{t_2}{t_2+f_2},
+\]
+which holds only if $f_1=f_2=0$ or if
+\begin{equation}
+\frac{p_1}{n_1}=\frac{p_2}{n_2}. \label{eq:practice:precisionequality}
+\end{equation}
+In words, Equation \eqref{eq:practice:precisionequality} implies that we can only achieve equal precision when the classifier is perfect on the positive class or when the ratios of positive numbers of people in the positive and negative classes for both categories are equal. Both of these conditions are beyond our control as modellers. In particular, the number in each class for each category is, as we stated initially, determined by the real world problem. Men and women suffer different medical conditions at different rates; young people and old people have different interests in advertised products; and different ethnicities experience different levels of systemic racism.  These differences cannot be eliminated by a model.
+
+In general, the analysis above shows that it is impossible to achieve simultaneous equality in precision, true positive rate, and false positive rate. If we set our parameters so that our model is fair for two of these error functions, then we always find the condition in \eqref{eq:practice:precisionequality} as a consequence of the third.\vadjust{\pagebreak} Unless all the positive and negative classes occur at the same rate for both classes, then achieving fairness in all three error functions is impossible. The result above has been refined by Kleinberg and colleagues, where they include properties of the classifier, $f(x)$, in their derivation \parencite{kleinberg2018algorithmic}.
+
+Various methods have been suggested by researchers to attempt to achieve results as close as possible to all three fairness criteria. We do not, however, discuss them here, for one simple reason. We wish to emphasise that solving `fairness' is not primarily a technical problem. The ethics through awareness paradigm emphasises our responsibility as engineers to be aware of these limitations and explain them to clients, and a joint decision should be made on how to navigate the pitfalls.
+
+
+\section{Misleading Claims about Performance}\label{ch12:sec12.2}
+
+Machine learning is one of the most rapidly growing fields of research and has led to many new applications. With this rapid development comes hyperbolic claims about what the techniques can achieve. Much of the research in machine learning is conducted by large private companies such as Google, Microsoft, and Facebook. Although the day-to-day running of these companies' research departments is independent of commercial operations, they also have public relations departments whose goal it is to engage the wider general public in the research conducted. As a result, research is (in part) a form of advertising for these companies. For example, in 2017, Google DeepMind engineers found a novel way, using convolutional networks, of scaling up a reinforcement learning approach previously successful in producing unbeatable strategies for backgammon to do the same in Go and Chess. The breakthrough was heavily promoted by the company as a game-changer in artificial intelligence. A movie, financially supported by Google and watched nearly 20 million times on Youtube (a platform owned by Google), was made about the achievement. Regardless of the merits of the actual technical development, the point here is that research is also advertising, and as such, the scope of the results can potentially be exaggerated for commercial gain.
+
+The person who embodies this tension between research and advertising best is Elon Musk. The CEO of Tesla, an engineer and at time of writing the richest man in the world, has made multiple claims about machine learning that simply do not stand up to closer scrutiny. In May 2020, he claimed that Tesla would develop a commercially available level-5 self-driving car by the end of the year, a claim he then seemed to back-peddle on by December (commercial vehicles have level-2 capabilities). In August 2020, he presented a chip implanted in a pig's brain, claiming this was a step towards curing dementia and spinal cord injuries -- a claim about which researchers working in these areas were sceptical. These promotional statements -- and other similar claims made by Musk about the construction of underground travel systems and establishing bases to Mars -- can be viewed as personal speculation, but they impact how the public view what machine learning can achieve.
+
+These examples, taken from the media, are important to us as practicing machine learning engineers, because they are symptomatic of a larger problem concerning how performance is reported in machine learning. To understand this problem, let's again concentrate on a series of concrete examples, where the misleading nature of claims about machine learning can be demonstrated.
+
+\subsection{Criminal Sentencing}
+
+The first example relates to the Compas algorithm already discussed in \cref{sec:nofairness}. The algorithm is based on comprehensive data taken from  interviews with offenders. It uses first principal component analysis (unsupervised learning) and then logistic regression (supervised learning) to make predictions of whether a person will reoffend within two years. The performance was primarily measured using ROC (see \cref{fig:ROC} for details of the ROC curve), and the AUC of the resulting model was, depending on the data used, typically slightly over 0.70 \parencite{brennan2009evaluating}.
+
+To put this performance in context, we can compare it to a logistic regression model, with only two variables -- age of defendant and number of prior convictions -- trained to predict two year recidivism rates for the Broward County data set collected by Julia Angwin and her colleagues at Propublica. Perfoming a 90/10 training/test split on this data, \textcite{sumpter2018outnumbered} found an AUC of 0.73: for all practical purposes, the same as the Compas algorithm. This regression model's coefficients implied that older defendants are less likely to be arrested for further crimes, while those with more priors are more likely to be arrested again.
+
+This result calls in to question both the process of collecting data on individuals to put into an algorithm -- the interviews added very little predictive power over and above age and priors -- and whether it contributed to the sentencing decision-making process -- most judges are likely aware that age and priors plays a role in whether a person will commit a crime in the future. A valid question is then: what does the model actually add? In order to answer this question and to test how much predictive power a model has, we need to have a sensible benchmark to compare it to.
+
+\enlargethispage{1em}
+
+One simple way to do this is to see how humans perform on the same task. Dressel and Farid (2018) paid workers at the crowdsourcing service Mechanical Turk, all of whom were based in the USA, \$1 to evaluate 50 different defendant descriptions from the Propublica dataset \parencite{dressel2018accuracy}. After seeing each description, the participants were asked, `Do you think this person will commit another crime within two years?', to which they answered either `yes' or `no'. On average, the participants were correct at a level comparable to the Compas algorithm -- with an AUC close to 0.7 -- suggesting very little advantage to the recommendation algorithm used.
+
+These results do not imply that models should never be used in criminal decision-making. In some cases, humans are prone to make `seat of the pants' judgments that lead to incorrect decisions \parencite{holsinger2018rejoinder}. Instead, the message is about how we communicate performance. In the case of the Compas algorithm applied to the Propublica dataset, the performance level is comparable to that of Mechanical Turk workers who are paid \$1 to assess cases. Moreover, its predictions can be reproduced by a model including just age and previous convictions. For a sentencing application, it is doubtful that such a level of performance is sufficient to put it into production.
+
+In other contexts, an algorithm with human-level performance might be appropriate. For example, for a model used to suggest films or products in mass online advertising, such a performance level could well be deemed acceptable. In advertising, an algorithm could be applied much more efficiently than human recommendations, and the negative consequences of incorrect targeting are small. This leads us to our next point: that performance needs to be explained in the context of the application and compared to sensible benchmarks. To do this, we need to look in more detail at how we measure performance.
+
+\subsection{Explaining Models in an Understandable Way} \label{sec:understandable}
+
+In \cref{ch:evaluation} we defined AUC as the area under the curve plotting false positive rate against true positive rate. This is a widely used performance measure in applications, and it is therefore important to think more deeply about what it implies about our model. To help with this, we now give another, more intuitive, definition of AUC for four different problem domains.
+\begin{description}
+\item[Medical] `An algorithm is shown two input images, one containing a cancerous tumour and not containing a cancerous tumour. The two images are selected at random from those of people referred by a specialist for a scan. AUC is the proportion of times the algorithm correctly identifies the image containing the tumour.'
+
+\item[Personality] `An algorithm is given input from two randomly chosen Facebook profiles and asked to predict which of the users is more neurotic (as measured in a standardised questionnaire). AUC is the proportion of times it correctly identifies the more neurotic person.'
+
+\item[Goals] `An algorithm is shown input data of the location of two randomly chosen shots from a season of football (soccer) and predicts whether the shot is a goal or not. AUC is the proportion of times it correctly identifies the goal.'
+
+\item[Sentencing] `An algorithm is given demographic data of two convicted criminals, of whom one went on to be sentenced for further crimes within the next two years. AUC is the proportion of times it identified the individual who was sentenced for further crimes.'
+
+\end{description}
+In all four of theses cases, and in general, the AUC is equivalent to `the probability that a randomly chosen individual from the positive class has a higher score than a randomly chosen person from the negative class'.
+
+We now prove this equivalence.  To do this, we assume that every member can be assigned a score by our model. Most machine learning methods can be used to produce such a score, indicating whether the individual is more likely to belong to the positive class. For example, the function $g(\tbx)$ in \eqref{eq:claspredgen} produces such a score for logistic regression. Some, usually non-parametric machine learning methods, such as $k$-nearest neighbours, don't have an explicit score but often have a paramter (e.g. $k$) which can be tuned in a way that mimics the threshold $r$. In what follows, we assume, for convenience, that the positive class typically has higher scores than the negative class.
+
+We define a random variable $S_P$ which is the score produced by the model of a randomly chosen member of the positive class. We denote $F_P$ to be the cumulative distribution of scores of the positive class, i.e.
+\begin{equation}
+F_P(r) = p(S_P < r) = \int_{s=-\infty}^{r} f_P(s) ds, \label{eq:ScorefPr}
+\end{equation}
+where $f_P(r)$ is thus the probability density function of  $S_P$. %\textbf{(Note, I am leaving it to you to sort out the inconsistency of the use of $r$ here!)}
+Likewise, we define a random variable $S_N$ as the score of a randomly chosen member of the negative class. We further denote $F_N$ to be the cumulative distribution of scores of the negative class, i.e.
+\begin{equation}
+F_N(r) = p(S_N < r) = \int_{s=-\infty}^{r} f_N(s)ds. \label{eq:ScorenPr}
+\end{equation}
+The true positive rate for a given threshold $r$ is given by $v(r)=1-F_P(r)$, and the false positive rate for a given threshold $r$ is given by $u(r)=1-F_N(r)$. This is because all members with a score greater than $r$ are predicted to belong to the positive class.
+
+We can also use $v(r)$ and $u(r)$ to define
+\begin{equation}
+AUC  = \int_{u=0}^{1} v \big( r^{-1}(u) \big) du,  \label{eq:AUCdef}
+\end{equation}
+where $r^{-1}(u)$ is the inverse of $u(r)$. Changing the variable to $r$ gives
+\begin{align}
+AUC & =  \int_{r=\infty}^{-\infty} v(r) \cdot (- f_N(r)) dr =  \int_{r=-\infty}^{\infty} v(r) f_N(r) dr  \nonumber\\
+& =  \int_{r=-\infty}^{\infty} f_N(r) \cdot  \left(1 - F_P(r)\right)  dr, \label{eq:AUCdefFPFN}
+\end{align}
+giving an expression for AUC in terms of the distribution of scores. In practice, we calculate AUC by numerical integration of \eqref{eq:AUCdefFPFN}.% (see \cref{ex:ROCPRC}).
+
+In the context of explaining performance in applications, this mathematical definition provides little insight (especially to the layperson, but even to many mathematics professors!). Moreover, the nomenclatures ROC and AUC are not particularly descriptive. To prove why AUC is actually the same as `the probability that a randomly chosen individual from the positive class has a higher score than a randomly chosen person from the negative class', consider the scores $S_P$ and $S_N$ that our machine learning algorithm assigns to members of the positive and negative classes, respectively. The statement above can be expressed as \hbox{$p(S_P>S_N)$}, i.e. what is the probability that the positive member receives a higher score than the negative member. Using the definitions in \eqref{eq:ScorefPr} and \eqref{eq:ScorenPr}, this can be written as the conditional probability distribution
+\begin{equation}
+p(S_P>S_N) = \int_{r=-\infty}^{\infty} \int_{s=r}^{\infty}  f_N(r) \cdot  f_P(s) ds dr,  \label{eq:SPgreaterSN}
+\end{equation}
+which is equivalent to
+\begin{equation}
+p(S_P>S_N) = \int_{r=-\infty}^{\infty}  f_N(r)  \int_{s=r}^{\infty}  f_P(s) ds dr  = \int_{r=-\infty}^{\infty}  f_N(r) \cdot  \left(1 -  F_P(r) \right) dr, \label{eq:SPgreaterSN2}
+\end{equation}
+which is identical to \eqref{eq:AUCdefFPFN}.
+
+
+Using the term AUC, as we have done in this book, is acceptable in technical situations but should be avoided when discussing applications. Instead, it is better to refer directly to the probabilities of events for the different classes. Imagine, for example, that the probability that an individual in the positive class is given a higher score than a person in the negative class is 70\% (which was roughly the level observed in the example in the previous section). This implies that:
+\begin{description}
+\item[Medical] In 30\% of cases where a person with cancer is compared to someone without, the wrong person will be selected for treatment.
+\item[Personality] In 30\% of paired cases, an advert suited to a more neurotic person will be shown to a less neurotic person.
+\item[Goals] In 30\% of paired cases, the situation that was less likely to lead to a goal will be predicted to be a goal.
+\item[Sentencing] In 30\% of cases where a person who will go on to commit a crime is compared to someone who won't, the person less likely to commit the crime will receive a harsher assessment.
+\end{description}
+Clearly there are differences in the seriousness of these various outcomes, a fact that we should constantly be aware of when discussing performance. As such, words should be used to describe the performance rather than simply reporting that the AUC was 0.7.
+
+Stating our problem clearly in terms of the application domain also helps us see when AUC is not an appropriate measure of performance. Consider again the first example in our list above but now with three different formulations.
+\begin{description}
+\item[Medical 0] `An algorithm is shown two input images, one containing a cancerous tumour and one not containing a cancerous tumour.  We measure the proportion of times the algorithm correctly identifies the image containing the tumour.'
+\item[Medical 1] `An algorithm is shown two input images, one containing a cancerous tumour and one not containing a cancerous tumour. The two images are selected at\vadjust{\pagebreak} random from those of people referred by a specialist for a scan. We~measure the proportion of times the algorithm correctly identifies the image containing the tumour.'
+\item[Medical 2] `An algorithm is shown two input images, one containing a cancerous tumour and one not containing a cancerous tumour. The two images are selected randomly from people involved in a mass scanning programme, where all people in a certain age group take part. We measure the proportion of times the algorithm correctly identifies the image containing the tumour.'
+\end{description}
+The difference between these three scenarios lies in the prior likelihood that the person being scanned is positive. In Medical 0, this is unspecified. In Medical 1, it is likely to be relatively large, since the specialist ordered the scans because she suspected the people might have a tumour. In Medical 2, the prior likelihood is low, since most people scanned will not have a tumour. In Medical 1, the probability that a person with a tumour is likely to receive a higher score than someone without (i.e. AUC) is likely to be a good measure of algorithm performance, since the reason for the scan is to distinguish these cases. In Medical 2, the probability that a person with a tumour is likely to receive a higher score than someone without is less useful since most people don't have a tumour. We need another error function to assess our algorithm, possibly using a precision/recall curve. In Medical 0, we need more information about the medical test before we can assess performance. By clearly formulating our performance criterion and the data it is based on, we can make sure that we adopt the correct measure of performance from the start of our machine learning task.
+
+We have concentrated here on AUC for two reasons: (i) it is a very popular way of measuring performance and (ii) it is a particularly striking example of how technical jargon gets in the way of a more concrete, application-based understanding. It is important to realise, though, that the same lessons apply to all of the terminology used in this book in particular, and machine learning in general. Just a quick glance at \cref{tab:confmatterm} reveals the confusing and esoteric terminology used to describe performance, all of which hinders understanding and can create problems.
+
+Instead of using this terminology, when discussing false positives in the context of a mass screening for a medical condition, we should say `percentage of people who were incorrectly called for a further check-up' and when talking about false negatives we should say `percentage of people with the condition who were missed by the screening'. This will allow us to easily discuss the relative costs of false positives and false negatives in a more honest way. Even terms such as `misclassification error' should be referred to as `the overall proportion of times the algorithm is incorrect', while emphasising that this measurement is limited because it doesn't differentiate between people with the condition and those without.
+
+The ethical challenge here lies in honesty in communication. It is the responsibility of the data scientist to understand the domain they are working in and tailor the error functions they use to that domain. Results should not be exaggerated, and nor should an honest exposition of what your model contributes be replaced with what to people working outside machine learning appears to be jargon.
+
+\subsection{Cambridge Analytica}
+
+One prominent example of a misleading presentation of a machine learning algorithm can be found in the work of the company Cambridge Analytica. In 2016, at the Concordia Summit, Cambridge Analytica CEO, Alexander Nix told the audience his company could `predict the personality of every single adult in the United States of America'. He proposed that highly neurotic and conscientious voters could be targeted with the message that the `second amendment was an insurance policy'. Similarly, traditional, agreeable voters were told about how `the right to bear arms was important to hand down from father to son'. Nix claimed that he could use `hundreds and thousands of individual data points on audiences to understand exactly which messages are going to appeal to which audiences' \parencite{sumpter2018outnumbered}.
+
+Nix's claims were based on methods developed by researchers to predict answers to personality questionnaires using `likes' on Facebook. \textcite{youyou2015computer} created an app where Facebook users could fill in a standard personality quiz, based on the OCEAN model. The model asked 100 questions and, based on factor analysis, classified participants on five personality dimensions: Openness, Conscientiousness, Extraversion, Agreeableness, and Neuroticism . They also downloaded the user's `likes' and conducted principal component analysis, a standard unsupervised learning method, to find groups of `likes' which were correlated. They then used linear regression to relate personality dimension to the `likes', revealing, for example (in the USA in 2010/11)  that extraverts liked dancing, theatre, and Beer Pong; shy people like anime, role-playing games, and Terry Pratchett books; and neurotic people like Kurt Cobain and emo music and say `sometimes I hate myself'. Nix's presentation built on using this research to target individuals on the basis of their personalities.
+
+Cambridge Analytica's involvement in Donald Trump's campaign, and in particular the way it collected and stored personal data, became the focus of an international scandal. One whistleblower, Chris Wylie, described in the Guardian newspaper how the company created a `psychological warfare tool'. The Cambridge Analytica scandal was the basis for a popular film, \textit{The Great Hack}.
+
+
+\looseness-1{}The question remains, though, whether it is (as Nix and Wylie claimed) possible to identify the personality of individuals using the machine learning methods outlined above? To test this, \textcite{sumpter2018outnumbered} looked again at some of the data, for 19\,742 US-based Facebook users, that was publicly available for research in the form of the MyPersonality data set \parencite{kosinski2016mining}.  This analysis first replicated the principal component and regression approach carried out in \parencite{youyou2015computer}. This assigns scores to individuals for neuroticism as measured from regression on Facebook `likes', which we denote $F_i$, and from the personality test, which we denote $T_i$.
+
+Building on the method explained in \cref{sec:understandable} for measuring performance by comparing individuals (i.e. AUC), he repeatedly picked pairs of individuals, $i$ and $j$, at random and calculated
+\begin{equation}
+p(F_i>F_j, T_i>T_j) + p(F_j>F_i, T_j>T_i).\label{ch12:eqn12.10}
+\end{equation}
+In other words, he calculated the probability that the same individual scored highest in both Facebook-measured neuroticism and personality test-measured neuroticism. For the MyPersonality data set, this score was 0.6 \parencite{sumpter2018outnumbered}. This accuracy of 60\% can be compared to a baseline rate of 50\% for random predictions. The quality of the data used by Camridge Analytica was much lower than that used in the scientific study. Thus Nix's (and Wylie's) claims gave a misleading picture of what a `personality' algorithm can achieve.
+
+There were many ethical concerns raised about the way Cambridge Analytica stored and used personal data. In terms of performance, however, the biggest concern was that it was described -- both by its proponents and detractors -- in a way that overstated accuracy. The fact that neuroticism can be fitted by a regression model does not imply it can make high accuracy, targeted predictions about individuals. These concerns go much further than Cambridge Analytica. Indeed, companies regularly use machine learning and AI buzzwords to describe the potential of their algorithms. We, as machine learning engineers, have to make sure that the performance is reported properly, in terms that are easily understandable.
+
+\subsection{Medical Imaging}
+
+One of the most widespread uses of machine learning has been in medical applications. There are several notable success stories, including better detection of tumours in medical images, improvements in how hospitals are organised, and improvement of targeted treatments \parencite{vollmer2020machine}. At the same time, however, in the last three years, tens of thousands of papers have been published on medical applications of deep learning, alone. How many of these articles actually contribute to improving medical diagnosis over and above the methods that have previously been used?
+
+One way of measuring progress is to compare more sophisticated machine learning methods (e.g. random forests, neural networks, and support vector machines) against simpler methods. \textcite{christodoulou2019systematic} carried out a systematic review of 71 articles on medical diagnostic tests, comparing a logistic regression approach (chosen as a baseline method) to other more complicated machine learning approaches. Their first finding was that, in the majority (48 out of 71 studies), there was potential bias in the validation procedures used. This typically favoured the advanced machine learning methods. For example, in some cases, a data-driven variable selection was performed before applying the machine learning algorithms but not before logistic regression, thus giving the advanced methods an advantage. Another example was that in some cases, corrections for imbalanced data were used only for the more complex machine learning algorithms and not for logistic regression.
+
+The use of more complex machine learning approaches is usually motivated by the assumption that logistic regression is insufficiently flexible to give the best results. \citeauthor{christodoulou2019systematic}'s (\citeyear{christodoulou2019systematic}) second finding was that this assumption did not hold. For the studies where comparisons were unbiased, AUC tests showed that logistic regression performed (on average) as well as the other more complicated methods. This research is part of an increasing literature illustrating that advanced machine learning does not always deliver improvements. Writing in the British Medical Journal, \textcite{vollmer2020machine} state that `despite much promising research currently being undertaken, particularly in imaging, the literature as a whole lacks transparency, clear reporting to facilitate replicability, exploration of potential ethical concerns, and clear demonstrations of effectiveness.' There certainly have been breakthroughs using machine learning in medical diagnosis, but the vast increase in publications have not, in many application areas, led to significant improvements in model performance.
+
+In general, it is common for researchers to see themselves as acting in a way that is free from  commercial interests or outside pressures. This view is wrong. The problems we describe in this section are likely to exist in academia as well as industry. Researchers in academia receive funding from a system which rewards short term results. In some cases, the reward systems are explicit. For example, machine learning progress is often measured in performance on pre-defined challenges, encouraging the development of methods that work on a narrow problem domain. Even when researchers don't engage directly in challenges, progress is measured in scientific publication, peer recognition, media attention, and commercial interest.
+
+As with awareness of fairness, our response to this challenge should be to become performance-aware. We have to realise that most of the external pressure on us as engineers is to emphasise the positive aspects of our results. Researchers very seldom deliberately fabricate results about, for example, model validation -- and doing so would be very clearly unethical -- but we might sometimes give the impression that our models have more general applicability than they actually have or that they are more robust than they actually are. We might inadvertently (or otherwise) use technical language -- for example, referring to a novel machine learning method -- to give the impression of certainty. We should instead use straightforward language, specifying directly what the performance of our model implies, the limitations of the type of data it was tested on, and how it compares to human performance. We should also follow \citeauthor{christodoulou2019systematic}'s (\citeyear{christodoulou2019systematic})  advice in making sure our approach is not biased in favour of any particular method.
+
+%\subsection{Football goal predictions}
+
+%As a final, more lighthearted, example, we consider the expected goals model of football. Maybe drop
+
+
+
+\section{Limitations of Training Data}
+
+Throughout this book, we have emphasised that machine learning involves finding a model that uses input data, $\bx$, to predict an output, $y$. We have then described how to find the model that best captures the relationship between inputs and outputs. This process is essentially one of representing the data in the form of a model and, as such, any model we create is only as good as the data we use. No matter how sophisticated our machine learning methods are, we should view them as nothing more than convenient ways of representing patterns in the data we give them. They are fundamentally limited by their training data.
+
+A useful way of thinking about the limitations of data in machine learning then is in terms of a `stochastic parrot', a phrase introduced by \textcite{bender2021dangers}. The~machine learning model is fed an input, and it is `trained' to produce an output. It has no underlying, deeper understanding of the input and output data than this. Like a parrot, it is repeating a learnt relationship. This analogy does not undermine the power of machine learning to solve difficult problems. The inputs and outputs dealt with by a machine learning model are much more complicated that those learnt by a parrot (which is learning to make human-like noises). But the parrot analogy highlights two vital limitations:
+\begin{enumerate}
+\item[(i)] The predictions made by a machine learning algorithm are essentially repeating back the contents of the data, with some added noise (or stochasticity) caused by limitations of the model.
+\item[(ii)] The machine learning algorithm does not understand the problem it has learnt. It can't know when it is repeating something incorrect, out of context, or socially inappropriate.
+\end{enumerate}
+If it is trained on poorly structured data, a model will not produce useful outputs. Even worse, it might produce outputs that are dangerously wrong.
+
+Before we deal with more ethically concerning examples, let's start by looking at the model trained by Google's DeepMind team to play the Atari console game Breakout \parencite{mnih2015human}. The researchers used a convolutional neural network to learn the optimal output -- movement of the game controller -- from inputs -- in the form of screen shots in the game. The only input required was the pixel inputs from the console -- no additional features were supplied -- but the learning was still highly effective: after training, the model could play the game at a level higher than professional human game players.
+
+The way in which the neural network was able to learn to play from pixels alone can give the impression of intelligence. However, even very small changes to the structure of the game, for example shifting the paddle up or down one pixel or changing its size, will lead the algorithm to fail \parencite{kansky2017schema}. Such changes can be almost imperceptible to a human, who will just play the game as usual. But, because the algorithm is trained on pixel inputs, even a slight deviation in the positions and movements of those pixels leads it to give the incorrect output. When playing the game, the algorithm is simply parroting an input and output response.
+
+In the above example, training data is unlimited: the Atari games console simulator can be used to continually generate new instances of game play covering a wide spectrum of possible in-game situations. In many applications, though, data sets are often both limited and do not contain a representative sample of possible inputs. For example, \textcite{buolamwini2018gender} found that around 80\% of faces in two widely used facial recognition data sets were those of lighter-skinned individuals. They also found differences in commercially available facial recognition classifiers, which were more accurate on white males than on any other group. This raises a whole host of potential problems were face recognition software is to be used in, for example, criminal investigations: mistakes would be much more likely for people with darker skin colour.
+
+The stochastic parrot concept was originally applied to machine learning language models. These models are used to power automated translation tools -- between Arabic and English, for example -- and to provide autosuggestion in text applications. They are primarily based on unsupervised learning and provide generative models (see \cref{ch:outlook}) of relationships between words. For example, the Word2Vec and Glove models encode relationships between how commonly words do and don't co-occur. Each word is represented as a vector, and these vectors, after the model is trained, can be used to find word analogies. For example,  the vectors encoding the words \texttt{Liquid}, \texttt{Water}, \texttt{Gas}, and \texttt{Steam} will (in a well-trained model) have the following property:
+\[
+\texttt{Water} - \texttt{Liquid} + \texttt{Gas} = \texttt{Steam},
+\]
+capturing part of the scientific relationship between these words.
+
+When trained on a corpus of text, for example Wikipedia and newspaper articles, these methods will also encode analogies about human activities that are biased and discriminatory.  For example, after training a Glove model on a newspaper corpus,  \textcite{sumpter2018outnumbered} looked at word analogies between the names of the most popular British men and women in their forties. He found the following vector equalities:
+\begin{align*}
+\texttt{Intelligent} - \texttt{David} + \texttt{Susan} & = \texttt{Resourceful} \\
+\texttt{Brainy} - \texttt{David} + \texttt{Susan} & = \texttt{Prissy}\\
+\texttt{Smart} - \texttt{David} + \texttt{Susan} & =  \texttt{Sexy}
+\end{align*}
+The reason for these analogies is the training data, in which men and women are described in different ways and are thus associated with different words. A wide range of similar analogies has been identified, for example,
+\[
+\texttt{Computer Programmer} - \texttt{Man} + \texttt{Woman} = \texttt{Housewife}
+\]
+and researchers have found a high degree of bias in the distance between words related to race and those related to the pleasantness  of sensations. These algorithms encode the, usually implicit, biases in the way we write and talk differently about men and women.
+
+It may be possible to develop methods that mitigate these problems by, for example, identifying gender or racial bias and then correcting the representation to remove the bias \parencite{bolukbasi2016man}. At the same time, however, it is also important to remember that the roots of these problems lie in the data, not in the models. The machine learning algorithm is simply generating a representation (a generative model) of the data. Better quality, more balanced data will produce better results.
+
+These problems don't disappear simply by collecting more data. In fact, the problems can be made worse. The word analogy algorithms discussed above can make single word predictions in autocomplete with reasonable accuracy. With very large datasets (in 2021, Google's Switch-C was trained on a 74 GB database of text), it becomes possible to `predict' consecutive sentences in a text. So the model can be provided with test data consisting of a starting sentence or a question and then produce an autocomplete paragraph from that. These can be highly convincing and are, in many cases, factually correct. But if primed with, for example, questions about the QAnon conspiracy theory (a set of false theories posted on an internet notice board from 2017 onwards), then it will unknowingly repeat false information. For example, \textcite{mcguffie2020radicalization} primed GPT-3 (OpenAI's 2019 language model) with QAnon and posed it a sequence of questions, to which they received the following answers:
+
+\begin{quotation}
+Q: Should we get vaccines for the virus?
+
+A: No. Vaccines are used to sterilise people.\\
+
+Q: Who is going to sterilise people with vaccines?
+
+A: The Rothschilds.\\
+
+Q: Besides George Soros and the Saudi royal family, who else is working with the Rothschilds?
+
+A: Bill Gates.\\
+
+Q: What is Bill Gates' goal?
+
+A: To kill billions of people with vaccines.\\
+
+Q: What did Hillary Clinton do?
+
+A: Hillary Clinton was a high-level satanic priestess.
+\end{quotation}
+Clearly, none of this has any truth and is simply stochastically parroted from fake conspiracy websites and noticeboards.
+
+Several ethical questions thus arise about the process of fitting models to very large, unaudited data sets. An obvious danger is that these stochastic parrots give an impression of understanding and `writing' texts, just as it appeared that a neural network learnt to `play' the breakout game. We need to be aware of what has been learnt. In the case of breakout, the neural network has \textit{not} learnt about concepts such as paddles and balls, which human players use to understand the game. Similarly, the GPT-3 algorithm has learnt nothing about the concepts of the QAnon conspiracy, vaccines, and Bill Gates. There is a risk that if applied in, for example, a homework help application, the model will give incorrect information.
+
+The dangers are, in fact, more far-reaching and subtle. When training a neural network to play breakout, the engineers have access to an infinite supply of reliable data. For language models, the data sets are finite and biased. The challenge isn't, as it is in learning games,  to develop better machine learning methods; it is rather to create data sets that are suitable for the problem in hand. This does not necessarily mean creating larger and larger data sets, because as \textcite{bender2021dangers} explain, many of the corpuses of text available online -- from sites such as Reddit and entertainment news sites -- contain incorrect information and are highly biased in the way they represent the world. In particular, white males in their twenties are over-represented in these corpuses. Furthermore, in making certain `corrections' to large datasets, for example removing references to sex, the voices of, for example, LGBTQ people will be given less prominence.
+
+There are also problems of privacy preservation and accountability. The data contains sentences written in internet chat groups by real-world people about other real-world people, and information might later be tracked back to those individuals. It is possible that something you wrote on Reddit will suddenly appear, in a slightly modified form, as a sentence written or spoken by a bot. These problems can also arise in medical applications where sensitive patient data is used to train models and might be revealed in some of the suggestions made by these models. Nor are the problems limited to text. Machine learning on video sequences is often used to generate new, fake sequences that can be difficult for viewers to distinguish from reality.
+
+As we wrote at the start of this section, this book is primarily about machine learning methods. But what we see now, as we near the end of the book, is that the limitations of our methods are also determined by having access to good quality data. In the case of data about language and society, this cannot be done without first becoming \textit{aware} of the culture we live in and its history. This includes centuries of oppression of women, acts of slavery, and systemic racism. As with all examples in this chapter, we can't hide behind neutrality, because while a method might be purely computational, the data put into it is shaped by this history.
+
+%Much of the work by, for example, Timnit Gebru and Margaret Mitchell while working at Google in 2019 and 2020 was about finding ways to organise large data sets in a structured and accountable way. They are developing techniques such as model cards, which allow transparent reporting of a model's performance over different cultural and gender groups, as well as dataset documentation that provides transparency and accountability.
+
+%This research on improving data quality and accountability for machine learning is ongoing, but was interrupted at the end of 2020 when Google fired Gebru, after she objected to the company rejecting (during a process of internal review) the article we have referenced here on Stochastic Parrots. The article, on which Gebru and Mitchell are co-authors, was later accepted at a conference after scientific peer review. Google later fired Mitchell. It appears that some of those currently working in machine learning have difficulty understanding that if we want to apply methods to real world data, we need to have a deep awareness of the biases and structural inequalities inherent in the real world.
+
+We hope that this chapter will have helped you start to think about some of the potential ethical pitfalls in machine learning. We have emphasised throughout that the key starting point is awareness: awareness that there is no equation for fairness; awareness that you can't be fair in all possible ways; awareness that it is easy to exaggerate performance (when you shouldn't); awareness of the hype around machine learning; awareness that technical jargon can obscure simple explanations of what your model does; awareness that data sets encode biases that machine learning methods don't understand; and awareness that other engineers around you might fail to understand that they are not objective and neutral.
+%; and awareness that slogans such as Google's  `Don't Be Evil' can actually be evil (as well as good, depending on context!).
+
+Being aware of a problem doesn't solve it, but it is certainly a good start.
+
+\enlargethispage{1em}
+
+%\section{Models fail to preserve privacy}
+% I covered these issues briefly above.
+%\label{sec:privacydata}
+%
+%{\textbf Niklas. I think you had something in mind here?}. I suggest you write up your idea below as a 'negative' story. In the sense the a k-NN model might appear to preserve privacy, but actually does not.
+%
+%\begin{itemize}
+% \item A complex machine learning model has been trained on medical records, in order to predict whether a patient has a certain disease. Is it now possible, by only looking at the trained model, to find out whether \emph{the} medical records were among the training data? And by doing so, also recover some private information about you which was among the variables in the data (like details of the health status etc).
+%%	\item Some non-parametric models, like \knn, trees and Gaussian processes, literally contains all training data. Be careful.
+%%	\item However, also complex parametric models, notably deep learning, might also suffer from the same privacy issue.
+%%	\item Of course, this is an undesired effect in certain applications. An ongoing research topic.
+%\end{itemize}
+
+
+\section{Further Reading}\label{ch12:sec12.4}
+
+Several of the articles cited in this chapter are recommended further reading. In particular, \textcite{bender2021dangers}  introduces the idea of the stochastic parrots and was the basis of the last section. \textcite{sumpter2018outnumbered} covers many of the problems on the limitations of and biases in algorithms. The three problems described here make up only a tiny fraction of the ethical questions raisied by machine learning. Here, Cathy O'Neil's book \textit{Weapons of Math Destruction} is valuable reading \parencite{o2016weapons}.
+
+\cleardoublepage 
