@@ -4,9 +4,9 @@ body {
     color: black;
   }
 
-a:link { color: #C43733; } /* CSS link color (red) */
+a:link { color: #582E1A; } /* CSS link color (red) */
 
-a:visited { color: #6b4342; } /* CSS link color (grey) */
+a:visited { color: #F3A616; } /* CSS link color (grey) */
 
 
 .wy-side-nav-search {
@@ -14,12 +14,12 @@ a:visited { color: #6b4342; } /* CSS link color (grey) */
 }
 
 .wy-side-nav-search input[type=text] {
-    background: #E6E6E6;
-    border-color: #1d6862
+    background: #89A6BA;
+    border-color: #582E1A
 }
 
 .wy-nav-top {
-    background: #1d6862
+    background: #582E1A
 }
 
 .wy-nav-side {
@@ -27,7 +27,7 @@ a:visited { color: #6b4342; } /* CSS link color (grey) */
 }
 
 .wy-menu-vertical a {
-    color: #1d6862;
+    color: #582E1A;
 }
 
 .wy-menu-vertical a:hover {

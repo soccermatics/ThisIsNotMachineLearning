@@ -31,35 +31,18 @@ First part of the book.
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="In this section we use odds from previous tournaments to  fit the model to data. We do this usi...">
+    <div class="sphx-glr-thumbcontainer" tooltip="An example in rst">
 
 .. only:: html
 
-  .. image:: /gallery/lesson1/images/thumb/sphx_glr_plot_betting_thumb.png
-    :alt: Fitting the model
+  .. image:: /gallery/Introduction/images/thumb/sphx_glr_plot_example_thumb.png
+    :alt: An example in rst
 
-  :ref:`sphx_glr_gallery_lesson1_plot_betting.py`
-
-.. raw:: html
-
-      <div class="sphx-glr-thumbnail-title">Fitting the model</div>
-    </div>
-
+  :ref:`sphx_glr_gallery_Introduction_plot_example.py`
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="How it went in 2018 -------------------">
-
-.. only:: html
-
-  .. image:: /gallery/lesson1/images/thumb/sphx_glr_plot_predictions_thumb.png
-    :alt: Predictions World Cup 2022
-
-  :ref:`sphx_glr_gallery_lesson1_plot_predictions.py`
-
-.. raw:: html
-
-      <div class="sphx-glr-thumbnail-title">Predictions World Cup 2022</div>
+      <div class="sphx-glr-thumbnail-title">An example in rst</div>
     </div>
 
 
@@ -68,10 +51,10 @@ First part of the book.
     </div>
 
 --------
-Class II
+Class I
 --------
 
-From the book
+First part of the book.
 
 
 
@@ -82,18 +65,154 @@ From the book
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Coming soon.">
+    <div class="sphx-glr-thumbcontainer" tooltip="In this section we look at an example of dimension reduction  using a method known as principle...">
 
 .. only:: html
 
-  .. image:: /gallery/lesson2/images/thumb/sphx_glr_plot_bayes_thumb.png
-    :alt: Bayes Rule
+  .. image:: /gallery/Complexity/images/thumb/sphx_glr_plot_PCA_thumb.png
+    :alt: Categorising Friends
 
-  :ref:`sphx_glr_gallery_lesson2_plot_bayes.py`
+  :ref:`sphx_glr_gallery_Complexity_plot_PCA.py`
 
 .. raw:: html
 
-      <div class="sphx-glr-thumbnail-title">Bayes Rule</div>
+      <div class="sphx-glr-thumbnail-title">Categorising Friends</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="In this section we give an example of a modelling problem  approached in two different ways. Fi...">
+
+.. only:: html
+
+  .. image:: /gallery/Complexity/images/thumb/sphx_glr_plot_football_thumb.png
+    :alt: Modelling shots in football
+
+  :ref:`sphx_glr_gallery_Complexity_plot_football.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Modelling shots in football</div>
+    </div>
+
+
+.. raw:: html
+
+    </div>
+
+--------
+Class I
+--------
+
+First part of the book.
+
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbnails">
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="The task is to learn, whether the lead actor 1 is male or female. Lead actor 2 is male if actor...">
+
+.. only:: html
+
+  .. image:: /gallery/Open/images/thumb/sphx_glr_plot_films_thumb.png
+    :alt: Measuring fairness
+
+  :ref:`sphx_glr_gallery_Open_plot_films.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Measuring fairness</div>
+    </div>
+
+
+.. raw:: html
+
+    </div>
+
+--------
+Class I
+--------
+
+First part of the book.
+
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbnails">
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="fivethirtyeight">
+
+.. only:: html
+
+  .. image:: /gallery/Prediction/images/thumb/sphx_glr_plot_predictions_thumb.png
+    :alt: Election predictions
+
+  :ref:`sphx_glr_gallery_Prediction_plot_predictions.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Election predictions</div>
+    </div>
+
+
+.. raw:: html
+
+    </div>
+
+--------
+Class I
+--------
+
+First part of the book.
+
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbnails">
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Imagine your colleagues have created a supervised machine learning model to find people who mig...">
+
+.. only:: html
+
+  .. image:: /gallery/Fairness/images/thumb/sphx_glr_plot_fairness_thumb.png
+    :alt: Measuring fairness
+
+  :ref:`sphx_glr_gallery_Fairness_plot_fairness.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Measuring fairness</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="In May 2016, a ProPublica article &lt;a href=&quot;https://www.propublica.org/article/machine-bias-risk...">
+
+.. only:: html
+
+  .. image:: /gallery/Fairness/images/thumb/sphx_glr_plot_compass_thumb.png
+    :alt: Propublica Analysis
+
+  :ref:`sphx_glr_gallery_Fairness_plot_compass.py`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Propublica Analysis</div>
     </div>
 
 
@@ -106,8 +225,11 @@ From the book
    :hidden:
    :includehidden:
 
-   /gallery/lesson1/index.rst
-   /gallery/lesson2/index.rst
+   /gallery/Introduction/index.rst
+   /gallery/Complexity/index.rst
+   /gallery/Open/index.rst
+   /gallery/Prediction/index.rst
+   /gallery/Fairness/index.rst
 
 
 .. only:: html

@@ -62,6 +62,6 @@ def setup (app):
 bibtex_bibfiles = ['refs.bib']
 
 # add logo
-html_logo = "images/TENLogo.png"
+html_logo = "images/justpipe.png"
 html_theme_options = {'logo_only': True,
                       'display_version': False}

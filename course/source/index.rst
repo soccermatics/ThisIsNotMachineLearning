@@ -1,6 +1,6 @@
-.. image:: images/TENCover.png
+.. image:: images/thepipe.webp
    :width: 640
-   :align: center
+   :align: left
 
 **What is this site?**
 
