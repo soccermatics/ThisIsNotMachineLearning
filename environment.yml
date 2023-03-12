@@ -29,5 +29,6 @@ dependencies:
       - mplsoccer
       - sphinxcontrib-youtube
       - sphinx-gallery
+      - sphinxcontrib.bibtex
       - myst-parser
       - ruptures
